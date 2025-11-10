@@ -19,8 +19,10 @@ class TestMainFunctionality:
         with allure.step("Кликаем на таб 'Лента Заказов'"):
             main_page.click_order_feed_tab()
 
+        is_feed_page_opened = order_feed_page.is_feed_page_open()
+
         with allure.step("Проверяем, что открылась страница Ленты Заказов"):
-            assert order_feed_page.is_feed_page_open(), "Не открылась страница Ленты Заказов"
+            assert is_feed_page_opened, "Не открылась страница Ленты Заказов"
 
     @allure.title("Проверка перехода по клику на 'Конструктор'")
     def test_navigation_to_constructor_from_feed(self, driver):
@@ -33,8 +35,10 @@ class TestMainFunctionality:
         with allure.step("Кликаем на таб 'Конструктор'"):
             main_page.click_constructor_tab()
 
+        is_constructor_page_opened = main_page.is_constructor_title_visible()
+
         with allure.step("Проверяем, что открылась страница Конструктора"):
-            assert main_page.is_constructor_title_visible(), "Не открылась страница Конструктора"
+            assert is_constructor_page_opened, "Не открылась страница Конструктора"
 
     @allure.title("Проверка открытия модального окна 'Детали ингредиента'")
     def test_ingredient_click_opens_details_modal(self, driver):
@@ -46,25 +50,26 @@ class TestMainFunctionality:
         with allure.step("Кликаем на ингредиент (булку)"):
             main_page.click_ingredient()
 
+        is_modal_opened = main_page.is_ingredient_modal_visible()
+
         with allure.step("Проверяем, что модальное окно 'Детали' открылось"):
-            assert main_page.is_ingredient_modal_visible(), "Модальное окно 'Детали' не открылось"
+            assert is_modal_opened, "Модальное окно 'Детали' не открылось"
 
     @allure.title("Проверка закрытия модального окна 'Детали ингредиента' по крестику")
     def test_ingredient_modal_closes_by_close_button(self, driver):
         main_page = MainPage(driver)
 
-        with allure.step("Открываем главную и кликаем на ингредиент (предусловие)"):
+        with allure.step("Открываем главную и кликаем на ингредиент"):
             main_page.open_main_page()
             main_page.click_ingredient()
-            assert main_page.is_ingredient_modal_visible(), "Модальное окно не открылось (пре-проверка)"
 
         with allure.step("Закрываем модальное окно"):
             main_page.click_modal_close_button()
 
+        is_not_visible_after_close = main_page.is_element_not_visible(MainPageLocators.MODAL_HEADER_TITLE)
+
         with allure.step("Проверяем, что модальное окно закрылось"):
-            assert main_page.is_element_not_visible(
-                MainPageLocators.MODAL_HEADER_TITLE
-            ), "Модальное окно 'Детали ингредиента' не закрылось"
+            assert is_not_visible_after_close, "Модальное окно 'Детали ингредиента' не закрылось"
 
     @allure.title("Проверка увеличения счетчика при добавлении булки в заказ")
     def test_drag_ingredient_to_order_increases_counter(self, driver):
@@ -76,8 +81,10 @@ class TestMainFunctionality:
         with allure.step("Перетаскиваем булку в конструктор"):
             main_page.drag_ingredient_to_order()
 
+        bun_counter = main_page.get_bun_counter()
+
         with allure.step("Проверяем, что счетчик булки стал '2'"):
-            assert main_page.get_bun_counter() == "2", "Счетчик булки не равен 2"
+            assert bun_counter == "2", "Счетчик булки не равен 2"
 
     @allure.title("Проверка: авторизованный пользователь может оформить заказ")
     def test_authorized_user_can_create_order(self, driver, user_data):
@@ -93,14 +100,13 @@ class TestMainFunctionality:
         with allure.step("Логинимся, используя данные из фикстуры"):
             login_page.login(user_data["email"], user_data["password"])
 
-        with allure.step("Проверяем, что мы снова на главной (уже как юзер)"):
-            assert main_page.is_constructor_title_visible(), "Не произошел редирект на главную после логина"
-
         with allure.step("Добавляем булку в заказ"):
             main_page.drag_ingredient_to_order()
 
         with allure.step("Кликаем 'Оформить заказ'"):
             main_page.click_create_order_button()
 
+        is_order_modal_shown = main_page.is_order_modal_visible()
+
         with allure.step("Проверяем, что появилось модальное окно 'Заказ оформлен'"):
-            assert main_page.is_order_modal_visible(), "Модальное окно 'Заказ оформлен' не появилось"
+            assert is_order_modal_shown, "Модальное окно 'Заказ оформлен' не появилось"

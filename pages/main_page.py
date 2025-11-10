@@ -1,8 +1,8 @@
 import allure
-from selenium.webdriver import ActionChains
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from urls import URL
+from pages.login_page import LoginPage
 
 
 class MainPage(BasePage):
@@ -24,9 +24,6 @@ class MainPage(BasePage):
 
     @allure.step("Закрытие модального окна 'Детали ингредиента'")
     def click_modal_close_button(self):
-        self.click(MainPageLocators.MODAL_INGR_CLOSE_BUTTON)
-
-    def click_modal_close_ingredients_button(self):
         self.click(MainPageLocators.MODAL_INGR_CLOSE_BUTTON)
 
     @allure.step("Перетаскивание ингредиента (булки) в конструктор")
@@ -62,7 +59,6 @@ class MainPage(BasePage):
 
     @allure.step("Получение номера заказа из модального окна")
     def get_order_number_from_modal(self):
-        """Ждет появления модалки и возвращает номер заказа."""
         order_number_element = self.find(MainPageLocators.MODAL_ORDER_NUMBER)
         return order_number_element.text
 
@@ -70,7 +66,21 @@ class MainPage(BasePage):
     def get_order_number_and_close_modal(self):
         self.is_element_not_visible(MainPageLocators.MODAL_OVERLAY_GIF)
         order_number = self.get_order_number_from_modal()
-        self.click_modal_close_button()
-        self.is_element_not_visible(MainPageLocators.MODAL_ORDER_CONFIRM_TITLE)
 
+        self.click(MainPageLocators.MODAL_ORDER_CLOSE_BUTTON)
+
+        self.is_element_not_visible(MainPageLocators.MODAL_ORDER_CONFIRM_TITLE)
         return order_number
+
+    @allure.step("Выполнение логина и создание заказа (с булкой) от имени пользователя {email}")
+    def login_and_create_order(self, email, password):
+        login_page = LoginPage(self.driver)
+
+        self.open_main_page()
+        self.click_login_button_on_main()
+        login_page.login(email, password)
+
+        self.is_constructor_title_visible()
+
+        self.drag_ingredient_to_order()
+        self.click_create_order_button()

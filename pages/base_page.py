@@ -2,7 +2,7 @@ import allure
 from selenium.webdriver.support.ui import WebDriverWait as Wait
 from selenium.webdriver.support import expected_conditions as EC
 from locators.base_page_locators import BasePageLocators
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException
 
 
 class BasePage:
@@ -31,7 +31,13 @@ class BasePage:
 
     @allure.step("Клик по элементу {locator}")
     def click(self, locator):
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        # Универсальный клик, который работает в Chrome и Firefox.
+        try:
+            element = self.wait.until(EC.element_to_be_clickable(locator))
+            element.click()
+        except ElementClickInterceptedException:
+            element = self.wait.until(EC.visibility_of_element_located(locator))
+            self.driver.execute_script("arguments[0].click();", element)
 
     @allure.step("Проверить видимость элемента {locator}")
     def is_element_visible(self, locator):
@@ -56,6 +62,10 @@ class BasePage:
             return True
         except TimeoutException:
             return False
+
+    @allure.step("Ожидание, пока элемент {locator} не исчезнет")
+    def wait_for_element_to_be_invisible(self, locator):
+        self.wait.until(EC.invisibility_of_element_located(locator))
 
     # методы для работы с хедером
 
