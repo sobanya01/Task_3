@@ -63,10 +63,6 @@ class BasePage:
         except TimeoutException:
             return False
 
-    @allure.step("Ожидание, пока элемент {locator} не исчезнет")
-    def wait_for_element_to_be_invisible(self, locator):
-        self.wait.until(EC.invisibility_of_element_located(locator))
-
     # методы для работы с хедером
 
     @allure.step("Клик по табу 'Конструктор' в хедере")

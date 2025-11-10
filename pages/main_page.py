@@ -74,6 +74,13 @@ class MainPage(BasePage):
 
     @allure.step("Выполнение логина и создание заказа (с булкой) от имени пользователя {email}")
     def login_and_create_order(self, email, password):
+        self.login_user(email, password)
+
+        self.drag_ingredient_to_order()
+        self.click_create_order_button()
+
+    @allure.step("Выполнение логина пользователя {email}")
+    def login_user(self, email, password):
         login_page = LoginPage(self.driver)
 
         self.open_main_page()
@@ -82,5 +89,8 @@ class MainPage(BasePage):
 
         self.is_constructor_title_visible()
 
-        self.drag_ingredient_to_order()
-        self.click_create_order_button()
+    @allure.step("Выполнение логина и переход в 'Личный кабинет'")
+    def login_and_navigate_to_profile(self, email, password):
+        self.login_user(email, password)
+
+        self.click_profile_link()

@@ -11,7 +11,7 @@
   - `test_password_reset.py` — восстановление/сброс пароля
   - `test_user_profile.py` — личный кабинет и профиль
 - `pages/` — Page Object'ы (логика страниц):
-  - `base_page.py`, `main_page.py`, `login_page.py`, `profile_page.py`, `order_feed_page.py`, `recover_password_page.py`, `reset_password_page.py`
+  - `base_page.py`, `main_page.py`, `login_page.py`, `profile_page.py`, `order_feed_page.py`, `recover_password_page.py`
 - `locators/` — локаторы элементов страниц
 - `helpers/` — вспомогательный код:
   - `helpers.py` — фабрика вебдрайверов (`WebdriverFactory`), генератор строк
