@@ -11,10 +11,14 @@ class TestUserProfile:
     @allure.title("Проверка перехода в 'Личный кабинет' по клику на хедер")
     def test_personal_account_link_click_opens_profile_page(self, driver, user_data):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         profile_page = ProfilePage(driver)
 
         with allure.step("Логинимся"):
-            main_page.login_user(user_data["email"], user_data["password"])
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
 
         with allure.step("Кликаем на 'Личный Кабинет' в хедере"):
             main_page.click_profile_link()
@@ -27,10 +31,15 @@ class TestUserProfile:
     @allure.title("Проверка перехода в раздел 'История заказов' из личного кабинета")
     def test_profile_to_order_history_navigation(self, driver, user_data):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         profile_page = ProfilePage(driver)
 
         with allure.step("Логинимся и переходим в 'Личный кабинет'"):
-            main_page.login_and_navigate_to_profile(user_data["email"], user_data["password"])
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
+            main_page.click_profile_link()
 
         with allure.step("Кликаем на 'История заказов'"):
             profile_page.click_order_history_link()
@@ -47,7 +56,11 @@ class TestUserProfile:
         profile_page = ProfilePage(driver)
 
         with allure.step("Логинимся и переходим в 'Личный кабинет'"):
-            main_page.login_and_navigate_to_profile(user_data["email"], user_data["password"])
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
+            main_page.click_profile_link()
 
         with allure.step("Кликаем на 'Выход'"):
             profile_page.click_signout_button()

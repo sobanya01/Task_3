@@ -1,5 +1,5 @@
 import pytest
-from helpers.helpers import WebdriverFactory
+from helpers.webdriver_factory import WebdriverFactory
 from helpers.api_client import ApiClient
 
 

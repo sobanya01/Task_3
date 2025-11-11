@@ -38,3 +38,10 @@ class OrderFeedPageLocators:
         By.XPATH,
         "//p[normalize-space(text())='В работе:']/following-sibling::ul/li",
     )
+
+    # возвращает готовый кортеж
+    @staticmethod
+    def get_order_by_number_locator(order_number):
+        xpath_template = "//p[contains(@class, 'text_type_digits-default') and text()='{0}']"
+        formatted_xpath = xpath_template.format(order_number)
+        return (By.XPATH, formatted_xpath)

@@ -37,7 +37,12 @@ class BasePage:
             element.click()
         except ElementClickInterceptedException:
             element = self.wait.until(EC.visibility_of_element_located(locator))
-            self.driver.execute_script("arguments[0].click();", element)
+            self.execute_script("arguments[0].click();", element)
+
+    @allure.step("Выполнение JavaScript: {script}")
+    def execute_script(self, script, *args):
+        # args - это элементы source, target и т.д.
+        return self.driver.execute_script(script, *args)
 
     @allure.step("Проверить видимость элемента {locator}")
     def is_element_visible(self, locator):

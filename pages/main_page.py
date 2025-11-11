@@ -2,7 +2,6 @@ import allure
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from urls import URL
-from pages.login_page import LoginPage
 
 
 class MainPage(BasePage):
@@ -39,7 +38,7 @@ class MainPage(BasePage):
         });
         """
 
-        self.driver.execute_script(js_code, source, target)
+        self.execute_script(js_code, source, target)
 
     @allure.step("Проверка, что главная страница открыта")
     def is_constructor_title_visible(self):
@@ -48,6 +47,10 @@ class MainPage(BasePage):
     @allure.step("Проверка, что модальное окно 'Детали ингредиента' открыто")
     def is_ingredient_modal_visible(self):
         return self.is_element_visible(MainPageLocators.MODAL_HEADER_TITLE)
+
+    @allure.step("Проверка, что модальное окно 'Детали ингредиента' закрыто")
+    def is_ingredient_modal_closed(self):
+        return self.is_element_not_visible(MainPageLocators.MODAL_HEADER_TITLE)
 
     @allure.step("Проверка, что модальное окно 'Заказ оформлен' открыто")
     def is_order_modal_visible(self):
@@ -71,26 +74,3 @@ class MainPage(BasePage):
 
         self.is_element_not_visible(MainPageLocators.MODAL_ORDER_CONFIRM_TITLE)
         return order_number
-
-    @allure.step("Выполнение логина и создание заказа (с булкой) от имени пользователя {email}")
-    def login_and_create_order(self, email, password):
-        self.login_user(email, password)
-
-        self.drag_ingredient_to_order()
-        self.click_create_order_button()
-
-    @allure.step("Выполнение логина пользователя {email}")
-    def login_user(self, email, password):
-        login_page = LoginPage(self.driver)
-
-        self.open_main_page()
-        self.click_login_button_on_main()
-        login_page.login(email, password)
-
-        self.is_constructor_title_visible()
-
-    @allure.step("Выполнение логина и переход в 'Личный кабинет'")
-    def login_and_navigate_to_profile(self, email, password):
-        self.login_user(email, password)
-
-        self.click_profile_link()

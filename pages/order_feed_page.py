@@ -1,6 +1,5 @@
 import allure
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from locators.order_feed_page_locators import OrderFeedPageLocators
 from urls import URL
@@ -76,6 +75,6 @@ class OrderFeedPage(BasePage):
     @allure.step("Ожидание появления заказа {order_number} в ленте")
     def wait_for_order_in_feed(self, order_number):
 
-        order_locator = (By.XPATH, f"//p[contains(@class, 'text_type_digits-default') and text()='{order_number}']")
+        order_locator = OrderFeedPageLocators.get_order_by_number_locator(order_number)
 
         return self.is_element_visible(order_locator)

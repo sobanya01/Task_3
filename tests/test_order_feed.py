@@ -1,5 +1,6 @@
 import allure
 from pages.main_page import MainPage
+from pages.login_page import LoginPage
 from pages.order_feed_page import OrderFeedPage
 
 
@@ -22,9 +23,16 @@ class TestOrderFeedPage:
     @allure.title("Проверка: заказы пользователя отображаются в 'Ленте заказов'")
     def test_user_orders_from_history_appear_in_feed(self, driver, user_data):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         order_feed_page = OrderFeedPage(driver)
 
-        main_page.login_and_create_order(user_data["email"], user_data["password"])
+        with allure.step("Логинимся и создаем заказ"):
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
+            main_page.drag_ingredient_to_order()
+            main_page.click_create_order_button()
 
         with allure.step("Получаем номер заказа (и модалка закрывается)"):
             order_number = main_page.get_order_number_and_close_modal()
@@ -41,18 +49,24 @@ class TestOrderFeedPage:
     @allure.title("Проверка: при создании нового заказа счётчик 'Выполнено за всё время' увеличивается")
     def test_new_order_increases_all_time_counter(self, driver, user_data):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         order_feed_page = OrderFeedPage(driver)
 
         old_counter = order_feed_page.open_and_get_all_time_counter()
 
-        main_page.login_and_create_order(user_data["email"], user_data["password"])
+        with allure.step("Логинимся и создаем заказ"):
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
+            main_page.drag_ingredient_to_order()
+            main_page.click_create_order_button()
 
         with allure.step("Закрываем модальное окно 'Заказ оформлен'"):
             main_page.get_order_number_and_close_modal()
 
         with allure.step("Возвращаемся в Ленту Заказов и принудительно обновляем"):
             order_feed_page.open_feed_page()
-            driver.refresh()  # <-- ИСПРАВЛЕНИЕ 1: Добавлено обновление
 
         expected_new_count = old_counter + 1
         with allure.step(f"Проверяем, что счетчик 'За всё время' увеличился до {expected_new_count}"):
@@ -63,11 +77,18 @@ class TestOrderFeedPage:
     @allure.title("Проверка: при создании нового заказа счётчик 'Выполнено за сегодня' увеличивается")
     def test_new_order_increases_today_counter(self, driver, user_data):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         order_feed_page = OrderFeedPage(driver)
 
         old_counter = order_feed_page.open_and_get_today_counter()
 
-        main_page.login_and_create_order(user_data["email"], user_data["password"])
+        with allure.step("Логинимся и создаем заказ"):
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
+            main_page.drag_ingredient_to_order()
+            main_page.click_create_order_button()
 
         with allure.step("Закрываем модальное окно 'Заказ оформлен'"):
             main_page.get_order_number_and_close_modal()
@@ -84,9 +105,16 @@ class TestOrderFeedPage:
     @allure.title("Проверка: после оформления заказа его номер появляется в разделе 'В работе'")
     def test_new_order_number_appears_in_progress_section(self, driver, user_data):
         main_page = MainPage(driver)
+        login_page = LoginPage(driver)
         order_feed_page = OrderFeedPage(driver)
 
-        main_page.login_and_create_order(user_data["email"], user_data["password"])
+        with allure.step("Логинимся и создаем заказ"):
+            main_page.open_main_page()
+            main_page.click_login_button_on_main()
+            login_page.login(user_data["email"], user_data["password"])
+            main_page.is_constructor_title_visible()
+            main_page.drag_ingredient_to_order()
+            main_page.click_create_order_button()
 
         with allure.step("Получаем номер заказа (и модалка закрывается)"):
             order_number = main_page.get_order_number_and_close_modal()

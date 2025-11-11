@@ -2,7 +2,6 @@ import allure
 from pages.main_page import MainPage
 from pages.login_page import LoginPage
 from pages.order_feed_page import OrderFeedPage
-from locators.main_page_locators import MainPageLocators
 
 
 @allure.story("Основной функционал - Конструктор и Навигация")
@@ -66,7 +65,7 @@ class TestMainFunctionality:
         with allure.step("Закрываем модальное окно"):
             main_page.click_modal_close_button()
 
-        is_not_visible_after_close = main_page.is_element_not_visible(MainPageLocators.MODAL_HEADER_TITLE)
+        is_not_visible_after_close = main_page.is_ingredient_modal_closed()
 
         with allure.step("Проверяем, что модальное окно закрылось"):
             assert is_not_visible_after_close, "Модальное окно 'Детали ингредиента' не закрылось"
